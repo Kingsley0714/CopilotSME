@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Axion Fintech - SME Loan Eligibility Check</title>
+    <title>CopilotSME - SME Loan Eligibility Checker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -45,7 +45,7 @@
         }
 
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'Manrope', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 700;
             line-height: 1.2;
         }
@@ -57,7 +57,7 @@
         }
 
         button {
-            font-family: 'Manrope', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             cursor: pointer;
             border: none;
             transition: all 0.3s ease;
@@ -209,8 +209,8 @@
 
         /* Hero Section */
         #hero {
-            padding: 8rem 2rem 6rem;
-            margin-top: 80px;
+            padding: 5rem 2rem 6rem;
+            margin-top: 60px;
             background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
         }
 
@@ -1294,7 +1294,7 @@
             justify-content: center;
             font-weight: 700;
             font-size: 0.9rem;
-            font-family: 'Manrope', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .step-content {
@@ -1759,7 +1759,7 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <div class="logo">
+            <div class="logo" style="align-items: center; gap: 0.65rem;">
                 <svg viewBox="0 0 32 32" fill="none">
                     <defs>
                         <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -1770,13 +1770,15 @@
                     <path d="M16 2L28 30H4L16 2Z" stroke="url(#logoGradient)" stroke-width="1.5" fill="none"/>
                     <path d="M10 18H22M12 22L20 14" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
                 </svg>
-                <span>Axion</span>
+                <div style="display: flex; flex-direction: column; gap: 0.1rem;">
+                    <span style="font-size: 1.15rem; font-weight: 800; letter-spacing: -0.5px;">CopilotSME</span>
+                    <span style="font-size: 0.58rem; font-weight: 500; color: rgba(255,255,255,0.32); letter-spacing: 0.3px; line-height: 1;">by Axion Edge</span>
+                </div>
             </div>
             <ul class="nav-links">
                 <li><a href="#hero">Home</a></li>
                 <li><a href="#about">About</a></li>
-                <li><a href="#eligibility">Eligibility Check</a></li>
-                <li><a href="#contact">Submit Documents</a></li>
+                <li><a href="#eligibility">Eligibility Checker</a></li>
                 <li><a href="education.html">Knowledge Hub</a></li>
             </ul>
             <button class="nav-cta" onclick="document.getElementById('eligibility').scrollIntoView({behavior: 'smooth'})">Check Eligibility</button>
@@ -1789,7 +1791,7 @@
         <div class="mobile-menu" id="mobileMenu">
             <a href="#hero" onclick="closeMobileMenu()">Home</a>
             <a href="#about" onclick="closeMobileMenu()">About</a>
-            <a href="#eligibility" onclick="closeMobileMenu()">Eligibility Check</a>
+            <a href="#eligibility" onclick="closeMobileMenu()">Eligibility Checker</a>
             <a href="#contact" onclick="closeMobileMenu()">Contact</a>
             <a href="education.html" onclick="closeMobileMenu()">Knowledge Hub</a>
         </div>
@@ -1815,20 +1817,70 @@
                 </div>
                 <div class="hero-visual">
                     <div class="hero-card">
-                        <div style="margin-bottom: 1.5rem;">
-                            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">YOUR ELIGIBILITY SCORE</div>
+                        <!-- Top: Overall Score -->
+                        <div style="margin-bottom: 1.25rem;">
+                            <div style="color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.4rem;">YOUR ELIGIBILITY SCORE</div>
                             <div style="font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, #7c3aed, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">RM 2.5M</div>
-                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Maximum Recommended Loan</div>
+                            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem;">Maximum Recommended Loan</div>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+
+                        <!-- Stats Row -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
                             <div>
-                                <div style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.35rem;">Methods Passed</div>
-                                <div style="font-size: 1.5rem; color: var(--success);">3/3</div>
+                                <div style="color: var(--text-secondary); font-size: 0.75rem; margin-bottom: 0.25rem;">Methods Passed</div>
+                                <div style="font-size: 1.35rem; font-weight: 700; color: var(--success);">3/3</div>
                             </div>
                             <div>
-                                <div style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.35rem;">Gearing Ratio</div>
-                                <div style="font-size: 1.5rem;">2.8x</div>
+                                <div style="color: var(--text-secondary); font-size: 0.75rem; margin-bottom: 0.25rem;">Gearing Ratio</div>
+                                <div style="font-size: 1.35rem; font-weight: 700;">2.8x</div>
                             </div>
+                        </div>
+
+                        <!-- Bank Breakdown -->
+                        <div style="margin-bottom: 0.25rem;">
+                            <div style="color: var(--text-secondary); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem;">ELIGIBLE BANKS</div>
+
+                            <!-- Maybank -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--success);"></div>
+                                    <span style="font-size: 0.85rem; font-weight: 500;">Maybank</span>
+                                </div>
+                                <span style="font-size: 0.85rem; font-weight: 700; color: var(--success);">RM 2.0M</span>
+                            </div>
+
+                            <!-- CIMB -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--success);"></div>
+                                    <span style="font-size: 0.85rem; font-weight: 500;">CIMB</span>
+                                </div>
+                                <span style="font-size: 0.85rem; font-weight: 700; color: var(--success);">RM 1.8M</span>
+                            </div>
+
+                            <!-- HLBB -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--success);"></div>
+                                    <span style="font-size: 0.85rem; font-weight: 500;">HLBB</span>
+                                </div>
+                                <span style="font-size: 0.85rem; font-weight: 700; color: var(--success);">RM 2.5M</span>
+                            </div>
+
+                            <!-- RHB -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="width: 6px; height: 6px; border-radius: 50%; background: var(--success);"></div>
+                                    <span style="font-size: 0.85rem; font-weight: 500;">RHB</span>
+                                </div>
+                                <span style="font-size: 0.85rem; font-weight: 700; color: var(--success);">RM 2.2M</span>
+                            </div>
+
+                        </div>
+
+                        <!-- CTA hint -->
+                        <div style="margin-top: 1rem; padding: 0.6rem 0.75rem; background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.2); border-radius: 0.5rem; text-align: center;">
+                            <span style="font-size: 0.75rem; color: var(--accent-violet); font-weight: 600;">4 banks eligible — Check yours now</span>
                         </div>
                     </div>
                 </div>
@@ -1840,7 +1892,7 @@
     <section id="about">
         <div class="container">
             <h2 class="section-title">AI-Driven Fintech Consulting</h2>
-            <p class="about-text">Axion Fintech bridges the gap between SME owners and banks. Our AI engine runs real credit analysis — the same methods banks use internally — to tell you exactly how much you can borrow, which banks will approve you, and how to strengthen your application. No middlemen. No guesswork. Just intelligent data.</p>
+            <p class="about-text">CopilotSME bridges the gap between SME owners and banks. Our AI engine runs real credit analysis — the same methods banks use internally — to tell you exactly how much you can borrow, which banks will approve you, and how to strengthen your application. No middlemen. No guesswork. Just intelligent data.</p>
             <div class="value-cards">
                 <div class="value-card">
                     <h3>AI Credit Analysis</h3>
@@ -1861,7 +1913,7 @@
     <!-- Eligibility Tool Section -->
     <section id="eligibility">
         <div class="container">
-            <h2 class="section-title">AI-Powered Loan Eligibility Check</h2>
+            <h2 class="section-title">AI-Powered Loan Eligibility Checker</h2>
             <p class="section-subtitle">Enter your business financials below. Our AI engine analyses your data using 3 bank-grade credit methods and shows you exactly where you stand.</p>
 
             <div class="form-container">
@@ -2203,7 +2255,7 @@
                             <div class="step-number">1</div>
                             <div class="step-content">
                                 <div class="step-title">Download the Consent Form</div>
-                                <div class="step-desc">Download our CTOS/CCRIS consent form (PDF). This authorises Axion to retrieve your credit reports on your behalf under the CRA Act 2010.</div>
+                                <div class="step-desc">Download our CTOS/CCRIS consent form (PDF). This authorises CopilotSME to retrieve your credit reports on your behalf under the CRA Act 2010.</div>
                                 <a href="Axion_CCRIS_Consent_Form.pdf" download class="consent-download-btn">
                                     <svg viewBox="0 0 24 24" fill="none" style="width: 16px; height: 16px;">
                                         <path d="M12 4V16M12 16L8 12M12 16L16 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -2295,7 +2347,7 @@
                         </svg>
                         <span id="uploadBtnText">Upload Documents</span>
                     </button>
-                    <p class="upload-note">🔒 Your documents are encrypted and only accessible by Axion Fintech analysts.</p>
+                    <p class="upload-note">🔒 Your documents are encrypted and only accessible by CopilotSME analysts.</p>
                 </div>
 
             </div>
@@ -2317,7 +2369,7 @@
                         <path d="M16 2L28 30H4L16 2Z" stroke="url(#footerLogoGradient)" stroke-width="1.5" fill="none"/>
                         <path d="M10 18H22M12 22L20 14" stroke="url(#footerLogoGradient)" stroke-width="1.5" stroke-linecap="round"/>
                     </svg>
-                    <span>Axion</span>
+                    <span>CopilotSME</span>
                 </div>
                 <p style="color: var(--text-secondary); font-size: 0.9rem;">SME financing intelligence. Bank-grade analysis for Malaysian businesses.</p>
             </div>
@@ -2326,8 +2378,8 @@
                 <div class="footer-links">
                     <a href="#hero">Home</a>
                     <a href="#about">About</a>
-                    <a href="#eligibility">Check Eligibility</a>
-                    <a href="#contact">Submit Documents</a>
+                    <a href="#eligibility">Eligibility Checker</a>
+                    <a href="#contact">Contact</a>
                     <a href="#">Privacy Policy</a>
                     <a href="#">Terms of Service</a>
                 </div>
@@ -2341,6 +2393,14 @@
                 <div style="font-size: 0.9rem; color: var(--text-primary);">23-3A, Mayang Plaza, Taman Mayang Plaza, 47301 Petaling Jaya, Selangor</div>
             </div>
             <div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem;">Phone / WhatsApp</div>
+                <div style="font-size: 0.9rem; color: var(--text-primary);"><a href="https://wa.me/60164124245" style="color: var(--text-primary);">016-412 4245</a></div>
+            </div>
+            <div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem;">Email</div>
+                <div style="font-size: 0.9rem; color: var(--text-primary);"><a href="mailto:inquiry@copilotsme.com" style="color: var(--text-primary);">inquiry@copilotsme.com</a></div>
+            </div>
+            <div>
                 <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem;">Operating Hours</div>
                 <div style="font-size: 0.9rem; color: var(--text-primary);">Mon – Fri, 9:00 AM – 6:00 PM</div>
             </div>
@@ -2352,7 +2412,7 @@
     </footer>
 
     <!-- WhatsApp Button -->
-    <a href="https://wa.me/60164744245" target="_blank" class="whatsapp-btn">💬</a>
+    <a href="https://wa.me/60164124245" target="_blank" class="whatsapp-btn">💬</a>
 
     <script>
         // Mobile Menu Toggle
