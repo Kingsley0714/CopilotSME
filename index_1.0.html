@@ -1,0 +1,3048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axion Fintech - SME Loan Eligibility Check</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0f;
+            --bg-dark-light: #12121a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-card-hover: rgba(255, 255, 255, 0.08);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-tertiary: rgba(255, 255, 255, 0.5);
+            --accent-violet: #7c3aed;
+            --accent-blue: #3b82f6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --glass-blur: 12px;
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        button {
+            font-family: 'Manrope', sans-serif;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        input, textarea, select {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 15, 0.7);
+            backdrop-filter: blur(var(--glass-blur));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1.25rem 2rem;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .logo svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-links {
+            display: none;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-violet);
+        }
+
+        .nav-cta {
+            display: none;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-violet), var(--accent-blue));
+            color: white;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
+        }
+
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(var(--glass-blur));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem 2rem;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .mobile-menu.active {
+            display: flex;
+        }
+
+        .mobile-menu a {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Main sections */
+        section {
+            padding: 6rem 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -2px;
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 700px;
+        }
+
+        /* Hero Section */
+        #hero {
+            padding: 8rem 2rem 6rem;
+            margin-top: 80px;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero-text h1 .gradient {
+            background: linear-gradient(135deg, var(--accent-violet), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-text p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-violet), var(--accent-blue));
+            color: white;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.3);
+        }
+
+        .btn-secondary {
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .hero-trust {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .trust-item {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .trust-dot {
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, var(--accent-violet), var(--accent-blue));
+            border-radius: 50%;
+        }
+
+        .hero-visual {
+            display: none;
+        }
+
+        .hero-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(var(--glass-blur));
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* About Section */
+        #about {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(10, 10, 15, 0) 100%);
+        }
+
+        .about-text {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+
+        .value-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .value-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(var(--glass-blur));
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .value-card:hover {
+            background: var(--bg-card-hover);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .value-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .value-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Eligibility Tool Section */
+        #eligibility {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(59, 130, 246, 0.04) 100%);
+        }
+
+        .form-container {
+            max-width: 900px;
+            margin: 2rem auto 0;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            gap: 0.5rem;
+            padding-bottom: 1rem;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            color: var(--text-tertiary);
+            border: none;
+            border-bottom: 2px solid transparent;
+            font-weight: 600;
+            white-space: nowrap;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--text-primary);
+            border-bottom-color: var(--accent-violet);
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border-radius: 0.75rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(124, 58, 237, 0.5);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        input::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        input[type="number"], input[inputmode="numeric"] {
+            font-variant-numeric: tabular-nums;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Bank Statement Data Table */
+        .bank-statement-table {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1.2fr;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1.2fr;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .bank-input {
+            background: rgba(255, 255, 255, 0.03) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+
+        select.bank-input {
+            color: var(--text-primary);
+            cursor: pointer;
+            appearance: auto;
+        }
+
+        select.bank-input option,
+        select.bank-input optgroup {
+            background: #1a1a2e;
+            color: var(--text-primary);
+        }
+
+        .summary-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .summary-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-violet);
+        }
+
+        /* Dynamic rows */
+        .dynamic-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .row-wrapper {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .row-wrapper.header {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+        }
+
+        .row-header {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 0.5fr;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .row-header > span:last-child {
+            visibility: hidden;
+        }
+
+        .remove-row {
+            padding: 0.5rem 0.75rem;
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .remove-row:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .add-row-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(124, 58, 237, 0.2);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            color: var(--accent-violet);
+            border-radius: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .add-row-btn:hover {
+            background: rgba(124, 58, 237, 0.3);
+        }
+
+        /* Results Dashboard */
+        .results-dashboard {
+            display: none;
+            margin-top: 3rem;
+        }
+
+        .results-dashboard.show {
+            display: block;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-section {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .results-section:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .results-section:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .results-section:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .results-section:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        .results-section:nth-child(6) {
+            animation-delay: 0.5s;
+        }
+
+        .results-title {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .results-title .method-label {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.35rem 0.75rem;
+            background: rgba(124, 58, 237, 0.2);
+            color: var(--accent-violet);
+            border-radius: 0.35rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-item {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border-left: 3px solid var(--accent-violet);
+        }
+
+        .result-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .result-value.secondary {
+            font-size: 1.25rem;
+            color: var(--accent-violet);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .badge.pass {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .badge.fail {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .calculation-breakdown {
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 2px solid rgba(124, 58, 237, 0.3);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .calculation-breakdown p {
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calc-variable {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-violet), var(--accent-blue));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* Results summary table */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        .summary-table th {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .summary-table td {
+            padding: 1.25rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.95rem;
+        }
+
+        .summary-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Recommendation Box */
+        .recommendation-box {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .recommendation-box h4 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .recommendation-content {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .recommendation-cta {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-violet), var(--accent-blue));
+            color: white;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            width: 100%;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .recommendation-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+        }
+
+        /* Contact Section */
+        #contact {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(59, 130, 246, 0.04) 100%);
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .contact-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            height: fit-content;
+        }
+
+        .contact-info-item {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .contact-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .contact-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .whatsapp-link {
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(16, 185, 129, 0.1));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 0.75rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .whatsapp-link:hover {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.4), rgba(16, 185, 129, 0.2));
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-dark-light);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-title {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-violet);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            padding-top: 2rem;
+        }
+
+        /* Document Upload Section */
+        .upload-section {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(124, 58, 237, 0.05);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(124, 58, 237, 0.15);
+        }
+
+        .upload-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .upload-section > p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Drag & Drop Zone */
+        .dropzone {
+            position: relative;
+            border: 2px dashed rgba(124, 58, 237, 0.3);
+            border-radius: 1.25rem;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: rgba(124, 58, 237, 0.03);
+            margin-bottom: 1rem;
+        }
+
+        .dropzone:hover, .dropzone.dragover {
+            border-color: var(--accent-violet);
+            background: rgba(124, 58, 237, 0.08);
+        }
+
+        .dropzone.dragover {
+            transform: scale(1.01);
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.15);
+        }
+
+        .dropzone-icon {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(59,130,246,0.15));
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dropzone-icon svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .dropzone-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.35rem;
+        }
+
+        .dropzone-text span {
+            background: linear-gradient(135deg, var(--accent-violet), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .dropzone-sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .dropzone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* Document Category Selector */
+        .doc-category-select {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+
+        .doc-cat-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .doc-cat-btn:hover, .doc-cat-btn.active {
+            border-color: var(--accent-violet);
+            color: var(--text-primary);
+            background: rgba(124, 58, 237, 0.1);
+        }
+
+        .doc-cat-btn.active {
+            box-shadow: 0 0 12px rgba(124, 58, 237, 0.2);
+        }
+
+        /* File List */
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .file-item-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .file-item-icon.pdf { background: rgba(239, 68, 68, 0.15); }
+        .file-item-icon.img { background: rgba(59, 130, 246, 0.15); }
+        .file-item-icon.doc { background: rgba(16, 185, 129, 0.15); }
+        .file-item-icon.other { background: rgba(255, 255, 255, 0.08); }
+
+        .file-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-item-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-item-meta {
+            display: flex;
+            gap: 0.75rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+        }
+
+        .file-item-category {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 1rem;
+            background: rgba(124, 58, 237, 0.12);
+            color: #a78bfa;
+            font-weight: 500;
+        }
+
+        /* Progress bar */
+        .file-progress {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 2px;
+            margin-top: 0.4rem;
+            overflow: hidden;
+        }
+
+        .file-progress-bar {
+            height: 100%;
+            border-radius: 2px;
+            background: linear-gradient(90deg, var(--accent-violet), var(--accent-blue));
+            transition: width 0.3s ease;
+        }
+
+        .file-item-status {
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .file-item-status.uploading { color: var(--accent-blue); }
+        .file-item-status.done { color: var(--success); }
+        .file-item-status.error { color: var(--danger); }
+
+        .file-remove {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: rgba(255,255,255,0.06);
+            border-radius: 50%;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .file-remove:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        /* Upload submit button */
+        .upload-submit-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent-violet), var(--accent-blue));
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .upload-submit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.3);
+        }
+
+        .upload-submit-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .upload-note {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            margin-top: 0.75rem;
+        }
+
+        @media (max-width: 767px) {
+            .dropzone {
+                padding: 2rem 1.25rem;
+            }
+
+            .doc-category-select {
+                gap: 0.35rem;
+            }
+
+            .doc-cat-btn {
+                font-size: 0.72rem;
+                padding: 0.4rem 0.75rem;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* CTOS Consent Section */
+        .consent-section {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(16, 185, 129, 0.04);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(16, 185, 129, 0.15);
+        }
+
+        .consent-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .consent-section > p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .consent-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .consent-step {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            padding: 1.25rem;
+            background: var(--bg-card);
+            border-radius: 1rem;
+            transition: var(--transition);
+        }
+
+        .consent-step:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(16,185,129,0.2), rgba(16,185,129,0.08));
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .step-desc {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .consent-download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.6rem;
+            padding: 0.55rem 1.15rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .consent-download-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
+        }
+
+        .consent-upload-zone {
+            border: 2px dashed rgba(16, 185, 129, 0.25);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: rgba(16, 185, 129, 0.02);
+            position: relative;
+            margin-top: 0.6rem;
+        }
+
+        .consent-upload-zone:hover, .consent-upload-zone.dragover {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.06);
+        }
+
+        .consent-upload-zone input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .consent-upload-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .consent-upload-text span {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .consent-file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .consent-submit-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            border-radius: 1rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .consent-submit-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.3);
+        }
+
+        .consent-submit-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .consent-note {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            margin-top: 0.75rem;
+        }
+
+        .consent-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .consent-divider::before, .consent-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        @media (max-width: 767px) {
+            .consent-step {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+        }
+
+        /* WhatsApp Button */
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            transition: all 0.3s ease;
+            z-index: 500;
+            text-decoration: none;
+        }
+
+        .whatsapp-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 1.25rem 1.5rem;
+            color: var(--text-primary);
+            z-index: 2000;
+            animation: slideInRight 0.3s ease;
+            backdrop-filter: blur(var(--glass-blur));
+        }
+
+        .toast.success {
+            border-left: 3px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 3px solid var(--danger);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+            }
+
+            .nav-cta {
+                display: block;
+            }
+
+            .hamburger {
+                display: none;
+            }
+
+            .hero-text h1 {
+                font-size: 4rem;
+            }
+
+            .hero-trust {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .hero-visual {
+                display: block;
+            }
+
+            .contact-content {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 2fr;
+            }
+
+            .footer-bottom {
+                flex-direction: row;
+            }
+        }
+
+        @media (max-width: 767px) {
+            section {
+                padding: 4rem 1.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-text h1 {
+                font-size: 2.25rem;
+            }
+
+            .hero-ctas {
+                flex-direction: column;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+            }
+
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .table-header, .table-row {
+                grid-template-columns: 0.8fr 1fr 1fr;
+                font-size: 0.85rem;
+            }
+
+            .row-header {
+                grid-template-columns: 1.5fr 1.5fr 0.8fr 0.4fr;
+            }
+
+            .whatsapp-btn {
+                width: 48px;
+                height: 48px;
+                bottom: 1.5rem;
+                right: 1.5rem;
+                font-size: 1.25rem;
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(124, 58, 237, 0.3);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(124, 58, 237, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <svg viewBox="0 0 32 32" fill="none">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M16 2L28 30H4L16 2Z" stroke="url(#logoGradient)" stroke-width="1.5" fill="none"/>
+                    <path d="M10 18H22M12 22L20 14" stroke="url(#logoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span>Axion</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#eligibility">Eligibility Check</a></li>
+                <li><a href="#contact">Submit Documents</a></li>
+            </ul>
+            <button class="nav-cta" onclick="document.getElementById('eligibility').scrollIntoView({behavior: 'smooth'})">Check Eligibility</button>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#hero" onclick="closeMobileMenu()">Home</a>
+            <a href="#about" onclick="closeMobileMenu()">About</a>
+            <a href="#eligibility" onclick="closeMobileMenu()">Eligibility Check</a>
+            <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Know Exactly What You <span class="gradient">Qualify For</span></h1>
+                    <p>Malaysia's AI-powered SME financing intelligence platform. Our AI engine analyses your financials using bank-grade credit methods — so you walk into the right bank, with the right numbers.</p>
+                    <div class="hero-ctas">
+                        <button class="btn-primary" onclick="document.getElementById('eligibility').scrollIntoView({behavior: 'smooth'})">Check My Eligibility</button>
+                        <button class="btn-secondary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Talk to an Advisor</button>
+                    </div>
+                    <div class="hero-trust">
+                        <div class="trust-item"><div class="trust-dot"></div> AI-Powered Analysis</div>
+                        <div class="trust-item"><div class="trust-dot"></div> 3 Credit Methods</div>
+                        <div class="trust-item"><div class="trust-dot"></div> Free Assessment</div>
+                        <div class="trust-item"><div class="trust-dot"></div> 15+ Bank Partners</div>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="hero-card">
+                        <div style="margin-bottom: 1.5rem;">
+                            <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">YOUR ELIGIBILITY SCORE</div>
+                            <div style="font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, #7c3aed, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">RM 2.5M</div>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">Maximum Recommended Loan</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <div style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.35rem;">Methods Passed</div>
+                                <div style="font-size: 1.5rem; color: var(--success);">3/3</div>
+                            </div>
+                            <div>
+                                <div style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 0.35rem;">Gearing Ratio</div>
+                                <div style="font-size: 1.5rem;">2.8x</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title">AI-Driven Fintech Consulting</h2>
+            <p class="about-text">Axion Fintech bridges the gap between SME owners and banks. Our AI engine runs real credit analysis — the same methods banks use internally — to tell you exactly how much you can borrow, which banks will approve you, and how to strengthen your application. No middlemen. No guesswork. Just intelligent data.</p>
+            <div class="value-cards">
+                <div class="value-card">
+                    <h3>AI Credit Analysis</h3>
+                    <p>Our AI runs DSCR, income factor, and balance coverage methods — the same criteria banks apply internally — in seconds.</p>
+                </div>
+                <div class="value-card">
+                    <h3>Direct Access</h3>
+                    <p>No brokers, no agents taking cuts. We connect you directly to the right financing.</p>
+                </div>
+                <div class="value-card">
+                    <h3>Advisory First</h3>
+                    <p>We don't just match you. We advise you on how to improve eligibility and structure your application.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Eligibility Tool Section -->
+    <section id="eligibility">
+        <div class="container">
+            <h2 class="section-title">AI-Powered Loan Eligibility Check</h2>
+            <p class="section-subtitle">Enter your business financials below. Our AI engine analyses your data using 3 bank-grade credit methods and shows you exactly where you stand.</p>
+
+            <div class="form-container">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(0)">Basic Info</button>
+                    <button class="tab-btn" onclick="switchTab(1)">Bank Statements</button>
+                    <button class="tab-btn" onclick="switchTab(2)">Financial Data</button>
+                    <button class="tab-btn" onclick="switchTab(3)">Loan Commitments</button>
+                </div>
+
+                <!-- Tab 1: Basic Information -->
+                <div class="tab-content active">
+                    <div class="form-group">
+                        <label>Company Name</label>
+                        <input type="text" id="companyName" placeholder="Enter your company name">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nature of Business</label>
+                            <select id="businessType">
+                                <option value="">Select business type</option>
+                                <option value="F&B">F&B</option>
+                                <option value="Retail">Retail</option>
+                                <option value="Manufacturing">Manufacturing</option>
+                                <option value="Services">Services</option>
+                                <option value="Construction">Construction</option>
+                                <option value="Technology">Technology</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Logistics">Logistics</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Years in Operation</label>
+                            <input type="text" id="yearsOperation" placeholder="e.g. 5 years">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Bank Statement Data -->
+                <div class="tab-content">
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Enter your last 6 months of bank statement data:</p>
+                    <div class="bank-statement-table">
+                        <div class="table-header">
+                            <div>Month</div>
+                            <div>Total Credit (RM)</div>
+                            <div>Ending Balance (RM)</div>
+                        </div>
+                        <div class="table-row">
+                            <div>Month 1</div>
+                            <input class="bank-input" type="text" inputmode="numeric" id="credit1" placeholder="0" oninput="calculateBankAverages()">
+                            <input class="bank-input" type="text" inputmode="numeric" id="balance1" placeholder="0" oninput="calculateBankAverages()">
+                        </div>
+                        <div class="table-row">
+                            <div>Month 2</div>
+                            <input class="bank-input" type="text" inputmode="numeric" id="credit2" placeholder="0" oninput="calculateBankAverages()">
+                            <input class="bank-input" type="text" inputmode="numeric" id="balance2" placeholder="0" oninput="calculateBankAverages()">
+                        </div>
+                        <div class="table-row">
+                            <div>Month 3</div>
+                            <input class="bank-input" type="text" inputmode="numeric" id="credit3" placeholder="0" oninput="calculateBankAverages()">
+                            <input class="bank-input" type="text" inputmode="numeric" id="balance3" placeholder="0" oninput="calculateBankAverages()">
+                        </div>
+                        <div class="table-row">
+                            <div>Month 4</div>
+                            <input class="bank-input" type="text" inputmode="numeric" id="credit4" placeholder="0" oninput="calculateBankAverages()">
+                            <input class="bank-input" type="text" inputmode="numeric" id="balance4" placeholder="0" oninput="calculateBankAverages()">
+                        </div>
+                        <div class="table-row">
+                            <div>Month 5</div>
+                            <input class="bank-input" type="text" inputmode="numeric" id="credit5" placeholder="0" oninput="calculateBankAverages()">
+                            <input class="bank-input" type="text" inputmode="numeric" id="balance5" placeholder="0" oninput="calculateBankAverages()">
+                        </div>
+                        <div class="table-row">
+                            <div>Month 6</div>
+                            <input class="bank-input" type="text" inputmode="numeric" id="credit6" placeholder="0" oninput="calculateBankAverages()">
+                            <input class="bank-input" type="text" inputmode="numeric" id="balance6" placeholder="0" oninput="calculateBankAverages()">
+                        </div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-item">
+                            <div class="summary-label">Avg Monthly Sales Credit</div>
+                            <div class="summary-value" id="avgCredit">RM 0</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Avg Monthly Ending Balance</div>
+                            <div class="summary-value" id="avgBalance">RM 0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Financial Statement Data -->
+                <div class="tab-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Annual Revenue (RM)</label>
+                            <input type="text" inputmode="numeric" id="annualRevenue" placeholder="0" oninput="calculateGearingRatio()">
+                        </div>
+                        <div class="form-group">
+                            <label>EBITDA (RM)</label>
+                            <input type="text" inputmode="numeric" id="ebitda" placeholder="0" oninput="calculateGearingRatio()">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Total Bank Borrowings (RM)</label>
+                            <input type="text" inputmode="numeric" id="totalBorrowings" placeholder="0" oninput="calculateGearingRatio()">
+                        </div>
+                        <div class="form-group">
+                            <label>Net Worth / Shareholders' Equity (RM)</label>
+                            <input type="text" inputmode="numeric" id="netWorth" placeholder="0" oninput="calculateGearingRatio()">
+                        </div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-item">
+                            <div class="summary-label">Current Gearing Ratio (Existing Borrowings)</div>
+                            <div class="summary-value" id="gearingValue">0.0x</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Status</div>
+                            <div style="margin-top: 0.5rem;"><span id="gearingStatus" class="badge">–</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Loan Commitments -->
+                <div class="tab-content">
+                    <h3 style="margin-bottom: 1.5rem; font-size: 1.1rem;">Term Loans / Hire Purchase</h3>
+                    <button class="add-row-btn" onclick="addTermLoan()">+ Add Facility</button>
+                    <div class="dynamic-rows" id="termLoans">
+                        <div class="row-wrapper header">
+                            <div class="row-header">
+                                <span>Facility Type</span>
+                                <span>Lender</span>
+                                <span>Monthly Instalment (RM)</span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-item">
+                            <div class="summary-label">Annual Commitment (Term)</div>
+                            <div class="summary-value" id="annualTermCommitment">RM 0</div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 2rem 0 1.5rem; font-size: 1.1rem;">Revolving Facilities (OD/BA/Trade Line)</h3>
+                    <button class="add-row-btn" onclick="addRevolvingFacility()">+ Add Facility</button>
+                    <div class="dynamic-rows" id="revolvingFacilities">
+                        <div class="row-wrapper header">
+                            <div class="row-header">
+                                <span>Facility Type</span>
+                                <span>Lender</span>
+                                <span>Facility Limit (RM)</span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="summary-box">
+                        <div class="summary-item">
+                            <div class="summary-label">Annual Commitment (Revolving)</div>
+                            <div class="summary-value" id="annualRevolvingCommitment">RM 0</div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(124, 58, 237, 0.15); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 1rem; padding: 1.5rem; margin-top: 2rem;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                            <div>
+                                <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">TOTAL ANNUAL COMMITMENT</div>
+                                <div style="font-size: 2rem; font-weight: 800; color: var(--text-primary);" id="totalAnnualCommitment">RM 0</div>
+                            </div>
+                            <div>
+                                <div style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.5rem;">TOTAL MONTHLY COMMITMENT</div>
+                                <div style="font-size: 2rem; font-weight: 800; color: var(--text-primary);" id="totalMonthlyCommitment">RM 0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" style="width: 100%; margin-top: 3rem; padding: 1.25rem; font-size: 1rem;" onclick="analyzeEligibility()">Run AI Analysis</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Eligibility Results Section (Separate from Loan Commitments) -->
+    <section id="eligibilityResults" style="padding-top: 0;">
+        <div class="container">
+            <div class="results-dashboard" id="resultsDashboard">
+                    <!-- Method 1: EBITDA Coverage -->
+                    <div class="results-section">
+                        <h3 class="results-title">
+                            Method 1: EBITDA Coverage (DSCR)
+                            <span class="method-label">Method 1</span>
+                        </h3>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">DSCR Ratio</div>
+                                <div class="result-value" id="resultDSCR">–</div>
+                                <span class="badge" id="resultDSCRBadge">–</span>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">Max Eligible Loan</div>
+                                <div class="result-value secondary" id="resultMaxLoan1">RM 0</div>
+                            </div>
+                        </div>
+                        <div class="calculation-breakdown">
+                            <p><span class="calc-variable">EBITDA:</span> <span id="calcEBITDA">RM 0</span></p>
+                            <p><span class="calc-variable">Total Annual Commitment:</span> <span id="calcTotalCommitment">RM 0</span></p>
+                            <p style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.75rem; margin-top: 0.75rem;"><span class="calc-variable">Max Loan = Reverse PMT of (EBITDA − Annual Commitment) / 12</span></p>
+                            <p><span class="calc-variable">Threshold:</span> EBITDA must cover all commitments (DSCR ≥ 1.0x)</p>
+                        </div>
+                    </div>
+
+                    <!-- Method 2: Income Factor -->
+                    <div class="results-section">
+                        <h3 class="results-title">
+                            Method 2: Income Factor
+                            <span class="method-label">Method 2</span>
+                        </h3>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">Current Obligation Ratio</div>
+                                <div class="result-value" id="resultObligationRatio">0.0%</div>
+                                <span class="badge" id="resultObligationBadge">–</span>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">Max Eligible Loan</div>
+                                <div class="result-value secondary" id="resultMaxLoan2">RM 0</div>
+                            </div>
+                        </div>
+                        <div class="calculation-breakdown">
+                            <p><span class="calc-variable">Monthly Sales Credit:</span> <span id="calcMonthlySalesCredit">RM 0</span></p>
+                            <p><span class="calc-variable">Monthly Income (8% of Credit):</span> <span id="calcMonthlyIncome">RM 0</span></p>
+                            <p><span class="calc-variable">Total Monthly Commitment:</span> <span id="calcTotalMonthlyCommitment">RM 0</span></p>
+                            <p style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.75rem; margin-top: 0.75rem;"><span class="calc-variable">Max Monthly Instalment = (Monthly Income × 80%) − Monthly Commitment</span></p>
+                            <p><span class="calc-variable">Threshold:</span> Obligation ratio ≤ 80%</p>
+                        </div>
+                    </div>
+
+                    <!-- Method 3: Ending Balance Coverage -->
+                    <div class="results-section">
+                        <h3 class="results-title">
+                            Method 3: Ending Balance Coverage
+                            <span class="method-label">Method 3</span>
+                        </h3>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">Current Balance Ratio</div>
+                                <div class="result-value" id="resultBalanceRatio">0.0%</div>
+                                <span class="badge" id="resultBalanceBadge">–</span>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">Max Eligible Loan</div>
+                                <div class="result-value secondary" id="resultMaxLoan3">RM 0</div>
+                            </div>
+                        </div>
+                        <div class="calculation-breakdown">
+                            <p><span class="calc-variable">Avg Ending Balance:</span> <span id="calcAvgBalance">RM 0</span></p>
+                            <p><span class="calc-variable">Total Monthly Commitment:</span> <span id="calcTotalMonthlyCommitment2">RM 0</span></p>
+                            <p style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.75rem; margin-top: 0.75rem;"><span class="calc-variable">Max Monthly Instalment = (Avg Balance × 50%) − Monthly Commitment</span></p>
+                            <p><span class="calc-variable">Threshold:</span> Balance ratio ≤ 50%</p>
+                        </div>
+                    </div>
+
+                    <!-- AI-Powered Summary Table -->
+                    <div class="results-section">
+                        <h3 class="results-title" style="display: flex; align-items: center; gap: 0.75rem;">
+                            <svg viewBox="0 0 24 24" fill="none" style="width: 22px; height: 22px; flex-shrink: 0;">
+                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="url(#aiGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <defs><linearGradient id="aiGrad" x1="2" y1="2" x2="22" y2="22"><stop stop-color="#7c3aed"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs>
+                            </svg>
+                            AI-Generated Overall Summary
+                        </h3>
+                        <div style="overflow-x: auto;">
+                        <table class="summary-table">
+                            <thead>
+                                <tr>
+                                    <th>Method / Criteria</th>
+                                    <th>Ratio</th>
+                                    <th>Threshold</th>
+                                    <th>Ratio Status</th>
+                                    <th>Max Eligible Loan</th>
+                                    <th>Gearing (Incl. New Loan)</th>
+                                    <th>Gearing Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Method 1: EBITDA Coverage</td>
+                                    <td id="summaryRatio1">–</td>
+                                    <td>DSCR ≥ 1.0x</td>
+                                    <td><span id="summaryRatioBadge1" class="badge">–</span></td>
+                                    <td id="summaryMaxLoan1">RM 0</td>
+                                    <td id="summaryGearing1">–</td>
+                                    <td><span id="summaryGearingBadge1" class="badge">–</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Method 2: Income Factor</td>
+                                    <td id="summaryRatio2">–</td>
+                                    <td>Obligation ≤ 80%</td>
+                                    <td><span id="summaryRatioBadge2" class="badge">–</span></td>
+                                    <td id="summaryMaxLoan2">RM 0</td>
+                                    <td id="summaryGearing2">–</td>
+                                    <td><span id="summaryGearingBadge2" class="badge">–</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Method 3: Balance Coverage</td>
+                                    <td id="summaryRatio3">–</td>
+                                    <td>Balance ≤ 50%</td>
+                                    <td><span id="summaryRatioBadge3" class="badge">–</span></td>
+                                    <td id="summaryMaxLoan3">RM 0</td>
+                                    <td id="summaryGearing3">–</td>
+                                    <td><span id="summaryGearingBadge3" class="badge">–</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+
+                        <!-- Max Eligible Loan Highlight -->
+                        <div style="background: linear-gradient(135deg, rgba(124, 58, 237, 0.25), rgba(59, 130, 246, 0.25)); border-radius: 1.5rem; padding: 2rem; margin-top: 2rem; text-align: center;">
+                            <div style="color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem;">AI-Recommended Maximum Eligible Loan</div>
+                            <div style="font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, #7c3aed, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;" id="maxEligibleLoan">RM 0</div>
+                            <div style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.75rem;" id="maxLoanSubtext">Based on the highest eligible method (BLR + 2% / 84 months)</div>
+                            <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 1.25rem;">
+                                <div>
+                                    <div style="color: var(--text-secondary); font-size: 0.75rem;">Projected Gearing Ratio</div>
+                                    <div style="font-size: 1.25rem; font-weight: 700; margin-top: 0.25rem;" id="projectedGearing">–</div>
+                                </div>
+                                <div>
+                                    <div style="color: var(--text-secondary); font-size: 0.75rem;">Gearing Status</div>
+                                    <div style="margin-top: 0.25rem;"><span id="projectedGearingBadge" class="badge">–</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommendation Box -->
+                    <div class="recommendation-box">
+                        <h4>AI Recommendation</h4>
+                        <div class="recommendation-content" id="recommendationText">
+                            Complete the form above to see your personalised recommendation.
+                        </div>
+                        <button class="recommendation-cta" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Want a Detailed Analysis? Book a Free Consultation</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <!-- Document Submission Section -->
+    <section id="contact">
+        <div class="container">
+            <h2 class="section-title">Submit Your Documents</h2>
+            <p class="section-subtitle">Upload your consent form, IC, and financial documents for a comprehensive eligibility assessment.</p>
+
+            <div style="max-width: 800px; margin: 0 auto;">
+
+                <!-- CTOS Consent Section -->
+                <div class="consent-section">
+                    <h3>CTOS / CCRIS Consent Authorisation</h3>
+                    <p>To check your full credit profile and loan eligibility, we need your signed consent to request your CTOS and CCRIS reports. Follow these 3 simple steps:</p>
+
+                    <div class="consent-steps">
+                        <div class="consent-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <div class="step-title">Download the Consent Form</div>
+                                <div class="step-desc">Download our CTOS/CCRIS consent form (PDF). This authorises Axion to retrieve your credit reports on your behalf under the CRA Act 2010.</div>
+                                <a href="Axion_CCRIS_Consent_Form.pdf" download class="consent-download-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" style="width: 16px; height: 16px;">
+                                        <path d="M12 4V16M12 16L8 12M12 16L16 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M4 20H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    Download Consent Form (PDF)
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="consent-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <div class="step-title">Sign & Prepare Documents</div>
+                                <div class="step-desc">Print and sign the consent form (or e-sign digitally). Also prepare a clear copy of your IC (front & back) for identity verification. All directors and shareholders listed on the form should sign.</div>
+                            </div>
+                        </div>
+
+                        <div class="consent-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <div class="step-title">Upload Signed Form & IC Copy</div>
+                                <div class="step-desc">Upload your signed consent form and IC copy below. Once received, our team will process your CTOS/CCRIS report within 1-2 business days.</div>
+
+                                <div class="consent-upload-zone" id="consentDropzone">
+                                    <div class="consent-upload-text">Drag & drop here, or <span>browse files</span></div>
+                                    <div style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.35rem;">Signed consent form + IC copy (front & back) — PDF, JPG, PNG</div>
+                                    <input type="file" id="consentFileInput" multiple accept=".pdf,.jpg,.jpeg,.png" onchange="handleConsentFiles(this.files)">
+                                </div>
+
+                                <div class="consent-file-list" id="consentFileList"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="consent-submit-btn" id="consentUploadBtn" onclick="uploadConsentFiles()" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" style="width: 20px; height: 20px;">
+                            <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span id="consentBtnText">Submit Consent & IC</span>
+                    </button>
+                    <p class="consent-note">🔒 Your personal data is protected under PDPA Act and used solely for credit assessment purposes.</p>
+                </div>
+
+                <div class="consent-divider">Supporting Documents</div>
+
+                <!-- Document Upload Section -->
+                <div class="upload-section">
+                    <h3>Upload Documents for Detailed Analysis</h3>
+                    <p>Upload your financial documents securely. Our team will review and prepare a comprehensive eligibility report.</p>
+
+                    <!-- Category Selector -->
+                    <label style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; display: block;">Select document type:</label>
+                    <div class="doc-category-select">
+                        <button type="button" class="doc-cat-btn active" onclick="selectDocCategory(this, 'Bank Statement')">Bank Statement</button>
+                        <button type="button" class="doc-cat-btn" onclick="selectDocCategory(this, 'Financial Report')">Financial Report</button>
+                        <button type="button" class="doc-cat-btn" onclick="selectDocCategory(this, 'SSM Document')">SSM Document</button>
+                        <button type="button" class="doc-cat-btn" onclick="selectDocCategory(this, 'CCRIS Report')">CCRIS Report</button>
+                        <button type="button" class="doc-cat-btn" onclick="selectDocCategory(this, 'Other')">Other</button>
+                    </div>
+
+                    <!-- Drag & Drop Zone -->
+                    <div class="dropzone" id="dropzone">
+                        <div class="dropzone-icon">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M12 16V8M12 8L9 11M12 8L15 11" stroke="url(#uploadGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M20 16.7428C21.2215 15.734 22 14.2079 22 12.5C22 9.46243 19.5376 7 16.5 7C16.2815 7 16.0771 6.886 15.9661 6.69774C14.6621 4.48484 12.2544 3 9.5 3C5.35786 3 2 6.35786 2 10.5C2 12.5661 2.83545 14.4371 4.18695 15.7935" stroke="url(#uploadGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <defs>
+                                    <linearGradient id="uploadGrad" x1="2" y1="3" x2="22" y2="16">
+                                        <stop stop-color="#7c3aed"/><stop offset="1" stop-color="#3b82f6"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="dropzone-text">Drag & drop files here, or <span>browse</span></div>
+                        <div class="dropzone-sub">PDF, JPG, PNG, Excel — Max 10MB per file</div>
+                        <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png,.xlsx,.xls,.doc,.docx,.csv" onchange="handleFiles(this.files)">
+                    </div>
+
+                    <!-- File List -->
+                    <div class="file-list" id="fileList"></div>
+
+                    <!-- Upload Button -->
+                    <button type="button" class="upload-submit-btn" id="uploadBtn" onclick="uploadAllFiles()" disabled>
+                        <svg viewBox="0 0 24 24" fill="none" style="width: 20px; height: 20px;">
+                            <path d="M12 16V8M12 8L9 11M12 8L15 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span id="uploadBtnText">Upload Documents</span>
+                    </button>
+                    <p class="upload-note">🔒 Your documents are encrypted and only accessible by Axion Fintech analysts.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="logo" style="margin-bottom: 1rem;">
+                    <svg viewBox="0 0 32 32" fill="none" style="width: 24px; height: 24px;">
+                        <defs>
+                            <linearGradient id="footerLogoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M16 2L28 30H4L16 2Z" stroke="url(#footerLogoGradient)" stroke-width="1.5" fill="none"/>
+                        <path d="M10 18H22M12 22L20 14" stroke="url(#footerLogoGradient)" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                    <span>Axion</span>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">SME financing intelligence. Bank-grade analysis for Malaysian businesses.</p>
+            </div>
+            <div class="footer-section">
+                <div class="footer-title">Quick Links</div>
+                <div class="footer-links">
+                    <a href="#hero">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#eligibility">Check Eligibility</a>
+                    <a href="#contact">Submit Documents</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Info Bar -->
+        <div style="max-width: 1400px; margin: 0 auto; padding: 2rem 0; border-top: 1px solid rgba(255,255,255,0.06); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+            <div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem;">Address</div>
+                <div style="font-size: 0.9rem; color: var(--text-primary);">Level 15, Menara Axion, Jalan Sultan Ismail, 50250 Kuala Lumpur</div>
+            </div>
+            <div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem;">Phone</div>
+                <div style="font-size: 0.9rem; color: var(--text-primary);"><a href="tel:+60164744245" style="color: var(--text-primary); text-decoration: none;">016-474 4245</a></div>
+            </div>
+            <div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem;">Email</div>
+                <div style="font-size: 0.9rem; color: var(--text-primary);"><a href="mailto:inquiry@axionfintech.com.my" style="color: var(--text-primary); text-decoration: none;">inquiry@axionfintech.com.my</a></div>
+            </div>
+            <div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem;">Operating Hours</div>
+                <div style="font-size: 0.9rem; color: var(--text-primary);">Mon – Fri, 9:00 AM – 6:00 PM</div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>© 2026 Axion Fintech Sdn Bhd. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/60164744245" target="_blank" class="whatsapp-btn">💬</a>
+
+    <script>
+        // Mobile Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        });
+
+        function closeMobileMenu() {
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('active');
+        }
+
+        // Tab Switching
+        function switchTab(index) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.tab-btn');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            tabs[index].classList.add('active');
+            buttons[index].classList.add('active');
+        }
+
+        // Number Formatting
+        function formatNumber(input) {
+            let value = input.value.replace(/,/g, '');
+            if (!isNaN(value) && value !== '') {
+                input.value = parseInt(value).toLocaleString('en-MY');
+            }
+        }
+
+        function parseNumber(value) {
+            return parseFloat(value.toString().replace(/,/g, '')) || 0;
+        }
+
+        function formatCurrency(num) {
+            return 'RM ' + Math.round(num).toLocaleString('en-MY');
+        }
+
+        // Bank Statement Calculations
+        function calculateBankAverages() {
+            let totalCredit = 0;
+            let totalBalance = 0;
+
+            for (let i = 1; i <= 6; i++) {
+                totalCredit += parseNumber(document.getElementById('credit' + i).value);
+                totalBalance += parseNumber(document.getElementById('balance' + i).value);
+            }
+
+            const avgCredit = totalCredit / 6;
+            const avgBalance = totalBalance / 6;
+
+            document.getElementById('avgCredit').textContent = formatCurrency(avgCredit);
+            document.getElementById('avgBalance').textContent = formatCurrency(avgBalance);
+        }
+
+        // Gearing Ratio Calculation
+        function calculateGearingRatio() {
+            const borrowings = parseNumber(document.getElementById('totalBorrowings').value);
+            const netWorth = parseNumber(document.getElementById('netWorth').value);
+
+            let gearingRatio = 0;
+            if (netWorth > 0) {
+                gearingRatio = borrowings / netWorth;
+            }
+
+            document.getElementById('gearingValue').textContent = gearingRatio.toFixed(2) + 'x';
+
+            const status = document.getElementById('gearingStatus');
+            if (gearingRatio <= 5.0) {
+                status.textContent = 'PASS';
+                status.className = 'badge pass';
+            } else {
+                status.textContent = 'FAIL';
+                status.className = 'badge fail';
+            }
+        }
+
+        // Dynamic Row Management
+        let termLoanCount = 0;
+        let revolvingFacilityCount = 0;
+
+        function addTermLoan() {
+            const container = document.getElementById('termLoans');
+            termLoanCount++;
+
+            const row = document.createElement('div');
+            row.className = 'row-wrapper';
+            row.id = 'termLoan' + termLoanCount;
+            row.innerHTML = `
+                <div class="row-header">
+                    <select class="bank-input" onchange="updateCommitments()">
+                        <option value="">Select type</option>
+                        <option value="Car Loan">Car Loan</option>
+                        <option value="Property Loan">Property Loan</option>
+                        <option value="Term Loan">Term Loan</option>
+                    </select>
+                    <select class="bank-input" onchange="updateCommitments()">
+                        <option value="">Select lender</option>
+                        <optgroup label="Commercial Banks">
+                            <option value="Maybank">Maybank</option>
+                            <option value="CIMB Bank">CIMB Bank</option>
+                            <option value="Public Bank">Public Bank</option>
+                            <option value="RHB Bank">RHB Bank</option>
+                            <option value="Hong Leong Bank">Hong Leong Bank</option>
+                            <option value="AmBank">AmBank</option>
+                            <option value="Bank Islam">Bank Islam</option>
+                            <option value="Bank Muamalat">Bank Muamalat</option>
+                            <option value="Affin Bank">Affin Bank</option>
+                            <option value="Alliance Bank">Alliance Bank</option>
+                            <option value="OCBC Bank">OCBC Bank</option>
+                            <option value="UOB Bank">UOB Bank</option>
+                            <option value="HSBC Bank">HSBC Bank</option>
+                            <option value="Standard Chartered">Standard Chartered</option>
+                            <option value="Citibank">Citibank</option>
+                            <option value="Bank Rakyat">Bank Rakyat</option>
+                            <option value="BSN">BSN</option>
+                            <option value="Agro Bank">Agro Bank</option>
+                            <option value="MBSB Bank">MBSB Bank</option>
+                            <option value="Al Rajhi Bank">Al Rajhi Bank</option>
+                        </optgroup>
+                        <optgroup label="Digital Banks">
+                            <option value="Boost Bank">Boost Bank</option>
+                            <option value="GX Bank">GX Bank</option>
+                            <option value="AEON Bank">AEON Bank</option>
+                        </optgroup>
+                        <optgroup label="P2P / Alternative">
+                            <option value="Fundaztic">Fundaztic</option>
+                            <option value="Funding Societies">Funding Societies</option>
+                            <option value="Capsphere">Capsphere</option>
+                            <option value="MicroLEAP">MicroLEAP</option>
+                            <option value="QuicKash">QuicKash</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option value="Other">Other</option>
+                        </optgroup>
+                    </select>
+                    <input type="text" inputmode="numeric" class="bank-input" placeholder="0" oninput="formatNumber(this)" onchange="updateCommitments()">
+                    <button type="button" class="remove-row" onclick="removeRow('termLoan${termLoanCount}')">Remove</button>
+                </div>
+            `;
+            container.appendChild(row);
+        }
+
+        function addRevolvingFacility() {
+            const container = document.getElementById('revolvingFacilities');
+            revolvingFacilityCount++;
+
+            const row = document.createElement('div');
+            row.className = 'row-wrapper';
+            row.id = 'revolvingFacility' + revolvingFacilityCount;
+            row.innerHTML = `
+                <div class="row-header">
+                    <select class="bank-input" onchange="updateCommitments()">
+                        <option value="">Select type</option>
+                        <option value="Overdraft">Overdraft</option>
+                        <option value="BA">Bankers Acceptance (BA)</option>
+                        <option value="Revolving Credit">Revolving Credit</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <select class="bank-input" onchange="updateCommitments()">
+                        <option value="">Select lender</option>
+                        <optgroup label="Commercial Banks">
+                            <option value="Maybank">Maybank</option>
+                            <option value="CIMB Bank">CIMB Bank</option>
+                            <option value="Public Bank">Public Bank</option>
+                            <option value="RHB Bank">RHB Bank</option>
+                            <option value="Hong Leong Bank">Hong Leong Bank</option>
+                            <option value="AmBank">AmBank</option>
+                            <option value="Bank Islam">Bank Islam</option>
+                            <option value="Bank Muamalat">Bank Muamalat</option>
+                            <option value="Affin Bank">Affin Bank</option>
+                            <option value="Alliance Bank">Alliance Bank</option>
+                            <option value="OCBC Bank">OCBC Bank</option>
+                            <option value="UOB Bank">UOB Bank</option>
+                            <option value="HSBC Bank">HSBC Bank</option>
+                            <option value="Standard Chartered">Standard Chartered</option>
+                            <option value="Citibank">Citibank</option>
+                            <option value="Bank Rakyat">Bank Rakyat</option>
+                            <option value="BSN">BSN</option>
+                            <option value="Agro Bank">Agro Bank</option>
+                            <option value="MBSB Bank">MBSB Bank</option>
+                            <option value="Al Rajhi Bank">Al Rajhi Bank</option>
+                        </optgroup>
+                        <optgroup label="Digital Banks">
+                            <option value="Boost Bank">Boost Bank</option>
+                            <option value="GX Bank">GX Bank</option>
+                            <option value="AEON Bank">AEON Bank</option>
+                        </optgroup>
+                        <optgroup label="P2P / Alternative">
+                            <option value="Fundaztic">Fundaztic</option>
+                            <option value="Funding Societies">Funding Societies</option>
+                            <option value="Capsphere">Capsphere</option>
+                            <option value="MicroLEAP">MicroLEAP</option>
+                            <option value="QuicKash">QuicKash</option>
+                        </optgroup>
+                        <optgroup label="Other">
+                            <option value="Other">Other</option>
+                        </optgroup>
+                    </select>
+                    <input type="text" inputmode="numeric" class="bank-input" placeholder="0" oninput="formatNumber(this)" onchange="updateCommitments()">
+                    <button type="button" class="remove-row" onclick="removeRow('revolvingFacility${revolvingFacilityCount}')">Remove</button>
+                </div>
+            `;
+            container.appendChild(row);
+        }
+
+        function removeRow(id) {
+            const row = document.getElementById(id);
+            if (row) {
+                row.remove();
+                updateCommitments();
+            }
+        }
+
+        function updateCommitments() {
+            let termMonthly = 0;
+            let termAnnual = 0;
+            let revolvingAnnual = 0;
+
+            // Calculate term loans (each row has 2 selects + 1 input)
+            const termRows = document.getElementById('termLoans').querySelectorAll('.row-wrapper:not(.header)');
+            termRows.forEach(row => {
+                const amountInput = row.querySelector('input[inputmode="numeric"]');
+                if (amountInput) {
+                    const monthly = parseNumber(amountInput.value);
+                    termMonthly += monthly;
+                    termAnnual += monthly * 12;
+                }
+            });
+
+            // Calculate revolving facilities (each row has 2 selects + 1 input)
+            const revolvingRows = document.getElementById('revolvingFacilities').querySelectorAll('.row-wrapper:not(.header)');
+            revolvingRows.forEach(row => {
+                const amountInput = row.querySelector('input[inputmode="numeric"]');
+                if (amountInput) {
+                    const limit = parseNumber(amountInput.value);
+                    revolvingAnnual += limit * 0.05;
+                }
+            });
+
+            document.getElementById('annualTermCommitment').textContent = formatCurrency(termAnnual);
+            document.getElementById('annualRevolvingCommitment').textContent = formatCurrency(revolvingAnnual);
+            document.getElementById('totalAnnualCommitment').textContent = formatCurrency(termAnnual + revolvingAnnual);
+            document.getElementById('totalMonthlyCommitment').textContent = formatCurrency(termMonthly + (revolvingAnnual / 12));
+        }
+
+        // PMT Formula Calculation
+        function calculatePMT(principal, rate, periods) {
+            if (rate === 0) return principal / periods;
+            const r = rate / 12;
+            const n = periods;
+            return principal * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+        }
+
+        // Reverse PMT - Calculate Principal from PMT
+        function calculatePrincipalFromPMT(pmt, rate, periods) {
+            if (rate === 0) return pmt * periods;
+            const r = rate / 12;
+            const n = periods;
+            return pmt * (Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n));
+        }
+
+        // Main Analysis Function
+        function analyzeEligibility() {
+            // Validate form
+            const companyName = document.getElementById('companyName').value;
+            const businessType = document.getElementById('businessType').value;
+            const yearsOp = document.getElementById('yearsOperation').value;
+
+            if (!companyName || !businessType || !yearsOp) {
+                showToast('Please complete all fields in Basic Info tab', 'error');
+                return;
+            }
+
+            // Collect bank data
+            let creditsSum = 0, balancesSum = 0;
+            for (let i = 1; i <= 6; i++) {
+                creditsSum += parseNumber(document.getElementById('credit' + i).value);
+                balancesSum += parseNumber(document.getElementById('balance' + i).value);
+            }
+            const avgMonthlyCredit = creditsSum / 6;
+            const avgMonthlyBalance = balancesSum / 6;
+
+            if (avgMonthlyCredit <= 0 || avgMonthlyBalance <= 0) {
+                showToast('Please enter bank statement data', 'error');
+                return;
+            }
+
+            // Collect financial data
+            const ebitda = parseNumber(document.getElementById('ebitda').value);
+            const totalBorrowings = parseNumber(document.getElementById('totalBorrowings').value);
+            const netWorth = parseNumber(document.getElementById('netWorth').value);
+
+            if (ebitda <= 0 || netWorth <= 0) {
+                showToast('Please enter financial statement data', 'error');
+                return;
+            }
+
+            // Calculate total commitments (updated for dropdown DOM)
+            let totalMonthlyCommitment = 0;
+            const termRows = document.getElementById('termLoans').querySelectorAll('.row-wrapper:not(.header)');
+            termRows.forEach(row => {
+                const amountInput = row.querySelector('input[inputmode="numeric"]');
+                if (amountInput) {
+                    totalMonthlyCommitment += parseNumber(amountInput.value);
+                }
+            });
+
+            const revolvingRows = document.getElementById('revolvingFacilities').querySelectorAll('.row-wrapper:not(.header)');
+            revolvingRows.forEach(row => {
+                const amountInput = row.querySelector('input[inputmode="numeric"]');
+                if (amountInput) {
+                    const limit = parseNumber(amountInput.value);
+                    totalMonthlyCommitment += (limit * 0.05) / 12;
+                }
+            });
+
+            const totalAnnualCommitment = totalMonthlyCommitment * 12;
+
+            // Loan parameters
+            const rate = 0.0845; // BLR + 2% (approx 8.45% p.a.)
+            const months = 84;
+
+            // Method 1: EBITDA Coverage — Max loan where DSCR = 1.0x
+            const maxAnnualInstalment1 = Math.max(0, ebitda - totalAnnualCommitment);
+            const maxMonthlyInstalment1 = maxAnnualInstalment1 / 12;
+            const maxLoan1 = maxMonthlyInstalment1 > 0 ? calculatePrincipalFromPMT(maxMonthlyInstalment1, rate, months) : 0;
+            const method1_pass = maxLoan1 > 0;
+            const dscrRatio = totalAnnualCommitment > 0 ? (ebitda / totalAnnualCommitment) : (ebitda > 0 ? 99.0 : 0);
+
+            // Method 2: Income Factor — Max loan where obligation ratio = 80%
+            const monthlyIncome = avgMonthlyCredit * 0.08;
+            const maxMonthlyInstalment2 = Math.max(0, (monthlyIncome * 0.80) - totalMonthlyCommitment);
+            const maxLoan2 = maxMonthlyInstalment2 > 0 ? calculatePrincipalFromPMT(maxMonthlyInstalment2, rate, months) : 0;
+            const method2_pass = maxLoan2 > 0;
+            const obligationRatio = monthlyIncome > 0 ? (totalMonthlyCommitment / monthlyIncome) : 1;
+
+            // Method 3: Balance Coverage — Max loan where balance ratio = 50%
+            const maxMonthlyInstalment3 = Math.max(0, (avgMonthlyBalance * 0.50) - totalMonthlyCommitment);
+            const maxLoan3 = maxMonthlyInstalment3 > 0 ? calculatePrincipalFromPMT(maxMonthlyInstalment3, rate, months) : 0;
+            const method3_pass = maxLoan3 > 0;
+            const balanceRatio = avgMonthlyBalance > 0 ? (totalMonthlyCommitment / avgMonthlyBalance) : 1;
+
+            // Determine recommendation — take the largest eligible amount from passing methods
+            const passMethods = [method1_pass, method2_pass, method3_pass].filter(x => x).length;
+            const eligibleLoans = [maxLoan1, maxLoan2, maxLoan3].filter(x => x > 0);
+            const recommendedLoan = eligibleLoans.length > 0 ? Math.max(...eligibleLoans) : 0;
+
+            // Gearing Ratios — (Total Borrowings + New Max Eligible Loan) / Net Worth
+            const gearing1 = netWorth > 0 ? (totalBorrowings + maxLoan1) / netWorth : 0;
+            const gearing2 = netWorth > 0 ? (totalBorrowings + maxLoan2) / netWorth : 0;
+            const gearing3 = netWorth > 0 ? (totalBorrowings + maxLoan3) / netWorth : 0;
+            const projectedGearing = netWorth > 0 ? (totalBorrowings + recommendedLoan) / netWorth : 0;
+            const gearing_pass = projectedGearing <= 5.0;
+
+            // Method 1 Results
+            document.getElementById('resultDSCR').textContent = dscrRatio.toFixed(2) + 'x';
+            document.getElementById('resultDSCRBadge').textContent = method1_pass ? 'PASS' : 'FAIL';
+            document.getElementById('resultDSCRBadge').className = method1_pass ? 'badge pass' : 'badge fail';
+            document.getElementById('resultMaxLoan1').textContent = formatCurrency(maxLoan1);
+
+            // Method 1 Breakdown
+            document.getElementById('calcEBITDA').textContent = formatCurrency(ebitda);
+            document.getElementById('calcTotalCommitment').textContent = formatCurrency(totalAnnualCommitment);
+
+            // Method 2 Results
+            document.getElementById('resultObligationRatio').textContent = (obligationRatio * 100).toFixed(1) + '%';
+            document.getElementById('resultObligationBadge').textContent = method2_pass ? 'PASS' : 'FAIL';
+            document.getElementById('resultObligationBadge').className = method2_pass ? 'badge pass' : 'badge fail';
+            document.getElementById('resultMaxLoan2').textContent = formatCurrency(maxLoan2);
+
+            // Method 2 Breakdown
+            document.getElementById('calcMonthlySalesCredit').textContent = formatCurrency(avgMonthlyCredit);
+            document.getElementById('calcMonthlyIncome').textContent = formatCurrency(monthlyIncome);
+            document.getElementById('calcTotalMonthlyCommitment').textContent = formatCurrency(totalMonthlyCommitment);
+
+            // Method 3 Results
+            document.getElementById('resultBalanceRatio').textContent = (balanceRatio * 100).toFixed(1) + '%';
+            document.getElementById('resultBalanceBadge').textContent = method3_pass ? 'PASS' : 'FAIL';
+            document.getElementById('resultBalanceBadge').className = method3_pass ? 'badge pass' : 'badge fail';
+            document.getElementById('resultMaxLoan3').textContent = formatCurrency(maxLoan3);
+
+            // Method 3 Breakdown
+            document.getElementById('calcAvgBalance').textContent = formatCurrency(avgMonthlyBalance);
+            document.getElementById('calcTotalMonthlyCommitment2').textContent = formatCurrency(totalMonthlyCommitment);
+
+            // AI-Generated Summary Table — Separate Ratio Status + Gearing Status per method
+            // Method 1
+            document.getElementById('summaryRatio1').textContent = dscrRatio.toFixed(2) + 'x';
+            document.getElementById('summaryRatioBadge1').textContent = method1_pass ? 'PASS' : 'FAIL';
+            document.getElementById('summaryRatioBadge1').className = method1_pass ? 'badge pass' : 'badge fail';
+            document.getElementById('summaryMaxLoan1').textContent = formatCurrency(maxLoan1);
+            document.getElementById('summaryGearing1').textContent = gearing1.toFixed(2) + 'x';
+            document.getElementById('summaryGearingBadge1').textContent = gearing1 <= 5.0 ? 'PASS' : 'FAIL';
+            document.getElementById('summaryGearingBadge1').className = gearing1 <= 5.0 ? 'badge pass' : 'badge fail';
+
+            // Method 2
+            document.getElementById('summaryRatio2').textContent = (obligationRatio * 100).toFixed(1) + '%';
+            document.getElementById('summaryRatioBadge2').textContent = method2_pass ? 'PASS' : 'FAIL';
+            document.getElementById('summaryRatioBadge2').className = method2_pass ? 'badge pass' : 'badge fail';
+            document.getElementById('summaryMaxLoan2').textContent = formatCurrency(maxLoan2);
+            document.getElementById('summaryGearing2').textContent = gearing2.toFixed(2) + 'x';
+            document.getElementById('summaryGearingBadge2').textContent = gearing2 <= 5.0 ? 'PASS' : 'FAIL';
+            document.getElementById('summaryGearingBadge2').className = gearing2 <= 5.0 ? 'badge pass' : 'badge fail';
+
+            // Method 3
+            document.getElementById('summaryRatio3').textContent = (balanceRatio * 100).toFixed(1) + '%';
+            document.getElementById('summaryRatioBadge3').textContent = method3_pass ? 'PASS' : 'FAIL';
+            document.getElementById('summaryRatioBadge3').className = method3_pass ? 'badge pass' : 'badge fail';
+            document.getElementById('summaryMaxLoan3').textContent = formatCurrency(maxLoan3);
+            document.getElementById('summaryGearing3').textContent = gearing3.toFixed(2) + 'x';
+            document.getElementById('summaryGearingBadge3').textContent = gearing3 <= 5.0 ? 'PASS' : 'FAIL';
+            document.getElementById('summaryGearingBadge3').className = gearing3 <= 5.0 ? 'badge pass' : 'badge fail';
+
+            // Max Eligible Loan + Projected Gearing
+            document.getElementById('maxEligibleLoan').textContent = formatCurrency(recommendedLoan);
+            document.getElementById('projectedGearing').textContent = projectedGearing.toFixed(2) + 'x';
+            document.getElementById('projectedGearingBadge').textContent = gearing_pass ? 'PASS' : 'FAIL';
+            document.getElementById('projectedGearingBadge').className = gearing_pass ? 'badge pass' : 'badge fail';
+
+            // AI Recommendation — with paid-up capital advice when gearing fails
+            let recommendationText = '';
+
+            // Calculate required paid-up capital if gearing fails
+            // Gearing threshold = 5.0x → Required Net Worth = (Total Borrowings + Max Eligible Loan) / 5.0
+            const requiredNetWorth = (totalBorrowings + recommendedLoan) / 5.0;
+            const capitalTopUp = Math.max(0, requiredNetWorth - netWorth);
+
+            if (passMethods >= 1 && !gearing_pass && recommendedLoan > 0) {
+                // Ratio passes but gearing fails — advise to increase paid-up capital
+                recommendationText = `<strong>AI Assessment: Ratio Passed, Gearing Exceeded.</strong> Your business passes ${passMethods} out of 3 credit methods with an AI-recommended maximum loan of <strong>${formatCurrency(recommendedLoan)}</strong>. However, the projected gearing ratio of <strong>${projectedGearing.toFixed(2)}x</strong> exceeds the 5.0x threshold.<br><br>`;
+                recommendationText += `<strong>AI Recommendation:</strong> To maintain a healthy gearing ratio of ≤ 5.0x, you would need to increase your paid-up capital / shareholders' equity by <strong>${formatCurrency(capitalTopUp)}</strong> (from ${formatCurrency(netWorth)} to ${formatCurrency(requiredNetWorth)}). This ensures (Total Borrowings ${formatCurrency(totalBorrowings)} + New Loan ${formatCurrency(recommendedLoan)}) ÷ Net Worth = 5.0x.<br><br>`;
+                recommendationText += `Schedule a consultation with our advisors to discuss capital injection strategies and optimise your application.`;
+            } else if (passMethods === 3 && gearing_pass) {
+                recommendationText = `<strong>AI Assessment: Excellent.</strong> Your business shows strong eligibility across all 3 credit analysis methods. Projected gearing ratio of ${projectedGearing.toFixed(2)}x remains well within the 5.0x threshold. AI-recommended maximum loan: <strong>${formatCurrency(recommendedLoan)}</strong>. Schedule a consultation with our advisors to finalise your application strategy.`;
+            } else if (passMethods >= 2 && gearing_pass) {
+                recommendationText = `<strong>AI Assessment: Good Position.</strong> Your business passes ${passMethods} out of 3 credit methods with projected gearing at ${projectedGearing.toFixed(2)}x. AI-recommended maximum loan: <strong>${formatCurrency(recommendedLoan)}</strong>. Consult our advisors to optimise and strengthen your profile.`;
+            } else if (passMethods >= 1 && gearing_pass) {
+                recommendationText = `<strong>AI Assessment: Partial Eligibility.</strong> Based on AI analysis, you pass ${passMethods} out of 3 methods. AI-recommended maximum loan: <strong>${formatCurrency(recommendedLoan)}</strong>. We recommend a consultation to review your financial structure and explore options.`;
+            } else {
+                recommendationText = `<strong>AI Assessment: Consultation Recommended.</strong> Current financials indicate limited eligibility across all methods. Please book a free consultation with our advisors to discuss alternative financing structures or strategies to improve your credit metrics.`;
+            }
+
+            document.getElementById('recommendationText').innerHTML = recommendationText;
+
+            // Show results
+            document.getElementById('resultsDashboard').classList.add('show');
+
+            // Scroll to results
+            setTimeout(() => {
+                document.getElementById('resultsDashboard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+
+        // ===== CTOS CONSENT UPLOAD SYSTEM =====
+        let consentFiles = [];
+
+        const consentDropzone = document.getElementById('consentDropzone');
+
+        consentDropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            consentDropzone.classList.add('dragover');
+        });
+
+        consentDropzone.addEventListener('dragleave', () => {
+            consentDropzone.classList.remove('dragover');
+        });
+
+        consentDropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            consentDropzone.classList.remove('dragover');
+            handleConsentFiles(e.dataTransfer.files);
+        });
+
+        function handleConsentFiles(files) {
+            const maxSize = 10 * 1024 * 1024;
+            for (const file of files) {
+                if (file.size > maxSize) {
+                    showToast(`${file.name} exceeds 10MB limit`, 'error');
+                    continue;
+                }
+                const id = 'c_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+                consentFiles.push({ id, file, status: 'ready' });
+                renderConsentFileItem({ id, file });
+            }
+            updateConsentBtn();
+            document.getElementById('consentFileInput').value = '';
+        }
+
+        function renderConsentFileItem(item) {
+            const list = document.getElementById('consentFileList');
+            const icon = getFileIcon(item.file.name);
+            const el = document.createElement('div');
+            el.className = 'file-item';
+            el.id = 'cfile-' + item.id;
+            el.innerHTML = `
+                <div class="file-item-icon ${icon.cls}">${icon.emoji}</div>
+                <div class="file-item-info">
+                    <div class="file-item-name">${item.file.name}</div>
+                    <div class="file-item-meta">
+                        <span>${formatFileSize(item.file.size)}</span>
+                        <span class="file-item-category" style="background: rgba(16,185,129,0.12); color: #34d399;">Consent / IC</span>
+                    </div>
+                    <div class="file-progress" id="cprogress-${item.id}" style="display:none;">
+                        <div class="file-progress-bar" id="cbar-${item.id}" style="width:0%; background: linear-gradient(90deg, #10b981, #059669);"></div>
+                    </div>
+                </div>
+                <span class="file-item-status" id="cstatus-${item.id}">Ready</span>
+                <button type="button" class="file-remove" onclick="removeConsentFile('${item.id}')">&times;</button>
+            `;
+            list.appendChild(el);
+        }
+
+        function removeConsentFile(id) {
+            consentFiles = consentFiles.filter(f => f.id !== id);
+            const el = document.getElementById('cfile-' + id);
+            if (el) el.remove();
+            updateConsentBtn();
+        }
+
+        function updateConsentBtn() {
+            const btn = document.getElementById('consentUploadBtn');
+            const readyFiles = consentFiles.filter(f => f.status === 'ready').length;
+            btn.disabled = readyFiles === 0;
+            document.getElementById('consentBtnText').textContent = readyFiles > 0
+                ? `Submit ${readyFiles} File${readyFiles > 1 ? 's' : ''}`
+                : 'Submit Consent & IC';
+        }
+
+        async function uploadConsentFiles() {
+            const btn = document.getElementById('consentUploadBtn');
+            btn.disabled = true;
+            document.getElementById('consentBtnText').textContent = 'Submitting...';
+
+            const companyName = document.getElementById('companyName').value || 'Unknown';
+            let successCount = 0;
+
+            for (const item of consentFiles) {
+                if (item.status !== 'ready') continue;
+
+                const statusEl = document.getElementById('cstatus-' + item.id);
+                const progressEl = document.getElementById('cprogress-' + item.id);
+                const barEl = document.getElementById('cbar-' + item.id);
+
+                statusEl.textContent = 'Uploading...';
+                statusEl.className = 'file-item-status uploading';
+                progressEl.style.display = 'block';
+
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress = Math.min(progress + Math.random() * 15, 90);
+                    barEl.style.width = progress + '%';
+                }, 200);
+
+                try {
+                    const base64 = await fileToBase64(item.file);
+                    await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            fileName: item.file.name,
+                            fileData: base64,
+                            mimeType: item.file.type,
+                            category: 'CTOS Consent & IC',
+                            companyName: companyName
+                        })
+                    });
+
+                    clearInterval(progressInterval);
+                    barEl.style.width = '100%';
+                    statusEl.textContent = 'Submitted';
+                    statusEl.className = 'file-item-status done';
+                    item.status = 'done';
+                    successCount++;
+                } catch (err) {
+                    clearInterval(progressInterval);
+                    statusEl.textContent = 'Failed';
+                    statusEl.className = 'file-item-status error';
+                    item.status = 'ready';
+                }
+            }
+
+            if (successCount > 0) {
+                showToast(`Consent form submitted successfully! We'll process your CTOS report within 1-2 business days.`, 'success');
+            }
+            updateConsentBtn();
+        }
+
+        // ===== DOCUMENT UPLOAD SYSTEM =====
+        // IMPORTANT: Replace this URL with your deployed Google Apps Script Web App URL
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0EbznGgq4Vx6AgRjonGcIb0oENlcWChPHkRzu_KQzmzN7UVMG5cNOs4takgERj6K5/exec';
+
+        let uploadedFiles = [];
+        let selectedCategory = 'Bank Statement';
+
+        function selectDocCategory(btn, category) {
+            document.querySelectorAll('.doc-cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedCategory = category;
+        }
+
+        // Drag & Drop events
+        const dropzone = document.getElementById('dropzone');
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dragover');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('dragover');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        function handleFiles(files) {
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            for (const file of files) {
+                if (file.size > maxSize) {
+                    showToast(`${file.name} exceeds 10MB limit`, 'error');
+                    continue;
+                }
+                const id = Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+                uploadedFiles.push({ id, file, category: selectedCategory, status: 'ready' });
+                renderFileItem({ id, file, category: selectedCategory, status: 'ready' });
+            }
+            updateUploadBtn();
+            // Reset file input so same file can be re-added
+            document.getElementById('fileInput').value = '';
+        }
+
+        function getFileIcon(name) {
+            const ext = name.split('.').pop().toLowerCase();
+            if (['pdf'].includes(ext)) return { emoji: '📕', cls: 'pdf' };
+            if (['jpg','jpeg','png','gif'].includes(ext)) return { emoji: '🖼️', cls: 'img' };
+            if (['doc','docx','xlsx','xls','csv'].includes(ext)) return { emoji: '📗', cls: 'doc' };
+            return { emoji: '📄', cls: 'other' };
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+
+        function renderFileItem(item) {
+            const fileList = document.getElementById('fileList');
+            const icon = getFileIcon(item.file.name);
+            const el = document.createElement('div');
+            el.className = 'file-item';
+            el.id = 'file-' + item.id;
+            el.innerHTML = `
+                <div class="file-item-icon ${icon.cls}">${icon.emoji}</div>
+                <div class="file-item-info">
+                    <div class="file-item-name">${item.file.name}</div>
+                    <div class="file-item-meta">
+                        <span>${formatFileSize(item.file.size)}</span>
+                        <span class="file-item-category">${item.category}</span>
+                    </div>
+                    <div class="file-progress" id="progress-${item.id}" style="display:none;">
+                        <div class="file-progress-bar" id="bar-${item.id}" style="width:0%"></div>
+                    </div>
+                </div>
+                <span class="file-item-status" id="status-${item.id}">Ready</span>
+                <button type="button" class="file-remove" id="remove-${item.id}" onclick="removeFile('${item.id}')">&times;</button>
+            `;
+            fileList.appendChild(el);
+        }
+
+        function removeFile(id) {
+            uploadedFiles = uploadedFiles.filter(f => f.id !== id);
+            const el = document.getElementById('file-' + id);
+            if (el) el.remove();
+            updateUploadBtn();
+        }
+
+        function updateUploadBtn() {
+            const btn = document.getElementById('uploadBtn');
+            const readyFiles = uploadedFiles.filter(f => f.status === 'ready').length;
+            btn.disabled = readyFiles === 0;
+            document.getElementById('uploadBtnText').textContent = readyFiles > 0
+                ? `Upload ${readyFiles} Document${readyFiles > 1 ? 's' : ''}`
+                : 'Upload Documents';
+        }
+
+        async function uploadAllFiles() {
+            const btn = document.getElementById('uploadBtn');
+            btn.disabled = true;
+            document.getElementById('uploadBtnText').textContent = 'Uploading...';
+
+            const companyName = document.getElementById('companyName').value || 'Unknown';
+            let successCount = 0;
+
+            for (const item of uploadedFiles) {
+                if (item.status !== 'ready') continue;
+
+                const statusEl = document.getElementById('status-' + item.id);
+                const progressEl = document.getElementById('progress-' + item.id);
+                const barEl = document.getElementById('bar-' + item.id);
+                const removeBtn = document.getElementById('remove-' + item.id);
+
+                statusEl.textContent = 'Uploading...';
+                statusEl.className = 'file-item-status uploading';
+                progressEl.style.display = 'block';
+                removeBtn.style.display = 'none';
+
+                // Simulate progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress = Math.min(progress + Math.random() * 15, 90);
+                    barEl.style.width = progress + '%';
+                }, 200);
+
+                try {
+                    const base64 = await fileToBase64(item.file);
+                    const response = await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            fileName: item.file.name,
+                            fileData: base64,
+                            mimeType: item.file.type,
+                            category: item.category,
+                            companyName: companyName
+                        })
+                    });
+
+                    clearInterval(progressInterval);
+                    barEl.style.width = '100%';
+                    statusEl.textContent = 'Uploaded';
+                    statusEl.className = 'file-item-status done';
+                    item.status = 'done';
+                    successCount++;
+                } catch (err) {
+                    clearInterval(progressInterval);
+                    barEl.style.width = '0%';
+                    statusEl.textContent = 'Failed';
+                    statusEl.className = 'file-item-status error';
+                    removeBtn.style.display = 'flex';
+                    item.status = 'ready';
+                }
+            }
+
+            if (successCount > 0) {
+                showToast(`${successCount} document${successCount > 1 ? 's' : ''} uploaded successfully!`, 'success');
+            }
+            updateUploadBtn();
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.3s ease reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeIn 0.6s ease forwards';
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe sections
+        document.querySelectorAll('section').forEach(section => {
+            section.style.opacity = '0';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
