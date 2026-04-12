@@ -1,2 +1,15 @@
+# OS files
 .DS_Store
+Thumbs.db
+
+# Temp files (Word/Excel lock files)
+~$*
+
+# Old folders
 untitled folder/
+
+# Archive — old versions kept locally but not deployed
+archive/
+
+# Docs — personal records, not part of the live site
+docs/

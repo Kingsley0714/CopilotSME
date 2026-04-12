@@ -86,18 +86,27 @@ All parameters live in the `BANK_RULES` object inside `index.html` and can be up
 
 ```
 .
-├── index.html                    # Main SME loan calculator (Mode 1)
+├── index.html                       # Main SME loan calculator (Mode 1)
 ├── education/
-│   └── index.html                # Education / how-it-works page
-├── education.html                # Legacy education page at root (pre-restructure)
-├── index_2.0.html                # Working draft of the next version
-├── _redirects                    # Netlify routing rules for multi-page URLs
-├── .gitignore                    # Excludes .DS_Store and temp folders
-├── DESIGN.md                     # Design system notes
-├── credit-analysis-template.md   # Template for the credit-analysis skill
-├── google-apps-script-upload.js  # Backend script for lead-capture uploads
-├── Axion Stitch/                 # UI design assets from the Stitch phase
-└── [various docs]                # Retrospectives, records, consent forms
+│   └── index.html                   # Education / how-it-works page
+├── _redirects                       # Netlify routing rules for multi-page URLs
+├── README.md                        # This file
+├── .gitignore                       # Git ignore rules
+├── credit-analysis-template.md      # Template for the credit-analysis skill
+├── google-apps-script-upload.js     # Backend script for lead-capture uploads
+├── docs/                            # Personal records & documents (not deployed)
+│   ├── CopilotSME_0_to_1_Record.docx
+│   ├── CopilotSME_Retrospective.docx
+│   ├── CopilotSME_0_to_1_Journey.pptx
+│   ├── Retrospective_Prompt_Template.md
+│   ├── DESIGN.md
+│   └── Axion_CCRIS_Consent_Form.pdf
+├── assets/                          # Design resources
+│   └── stitch/                      # UI design from the Stitch phase
+└── archive/                         # Old versions (kept locally, not in git)
+    ├── index_2.0.html
+    ├── education.html
+    └── Axion Fintech SEO+GEO Operating Plan.docx
 ```
 
 ---
